@@ -1,15 +1,16 @@
-from CreditCardInput import CreditCardInput
+from validators.CreditCardInput import CreditCardInput
 from fastapi import FastAPI
 import joblib
 import numpy as np
 
 app = FastAPI()
-model = joblib.load('credit_fraud_model.joblib')
+# credit card fraud detection model
+model = joblib.load('models/credit-model.joblib')
 
 
 @app.get("/")
 def root():
-    return {"message": "Hello World"}
+    return {"message": "TIVS --model backend"}
 
 @app.post('/credit-fraud/predict')
 def predict_fraud(credit_card_input: CreditCardInput):
