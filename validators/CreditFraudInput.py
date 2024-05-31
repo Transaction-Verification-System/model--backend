@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-class CreditCardInput(BaseModel):
+class CreditFraudInput(BaseModel):
     time: float
     amount: int
     v1: float
