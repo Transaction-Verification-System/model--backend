@@ -4,6 +4,7 @@ from utils.extractJson import extract_json
 from utils.preprocessBankData import preprocess_banking_data
 from fastapi import FastAPI
 import joblib
+from pandas import json_normalize
 
 
 app = FastAPI()
@@ -39,9 +40,7 @@ async def predict_banking_fraud(banking_fraud_input: BankingFraudInput):
     try: 
         values = extract_json(banking_fraud_input)
         data_array = preprocess_banking_data(values)
-
-        print(f'data_array: {data_array}')
-
+        print(f'processed data: {data_array}')
         prediction = await banking_model.predict(data_array)
 
         print(f'prediction: {prediction}')

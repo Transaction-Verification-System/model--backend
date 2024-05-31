@@ -1,22 +1,10 @@
-from sklearn.preprocessing import OneHotEncoder
-from sklearn.impute import SimpleImputer
-from sklearn.preprocessing import StandardScaler
 import numpy as np
 
 def preprocess_banking_data(data):
-    imputer = SimpleImputer(missing_values = np.nan , strategy='mean')
-    onehotencoder = OneHotEncoder(categories = 'auto')
-    sc = StandardScaler(with_mean = False)
+    print(f'data:', data)
 
-    data = onehotencoder.fit_transform(data)
-    print(f'onehotencoder:',data)
+    # Extract the values from the data
+    values = data.values()
 
-    data = imputer.fit_transform(data)
-    print(f'imputer:',data)
+    print('a',values)
 
-    data = sc.fit_transform(data)
-    print(f'sc:',data)
-
-
-
-    return data
