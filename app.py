@@ -1,5 +1,6 @@
 from validators.CreditFraudInput import CreditFraudInput
 from validators.BankingFraudInput import BankingFraudInput
+from validators.EcommerceFraud import TransactionData
 from utils.extractJson import extract_json
 from utils.preprocessBankData import preprocess_banking_data
 from fastapi import FastAPI
@@ -10,6 +11,7 @@ app = FastAPI()
 
 credit_model = joblib.load('models/CreditFraudModel.joblib')
 banking_model = joblib.load('models/BankingFraudModel.joblib')
+ecommerce_model= joblib.load('models/logistic_regression_model.pkl')
 
 
 @app.get("/")
@@ -56,3 +58,26 @@ async def predict_banking_fraud(banking_fraud_input: BankingFraudInput):
             'status': 'success',
             'error': str(e)
         }
+    
+
+
+@app.post('/ecommerce_fraud/predict')
+def predict(transaction: TransactionData):
+    try:
+        values = extract_json(transaction)
+        prediction = ecommerce_model.predict(values)
+        probability = ecommerce_model.predict_proba(values)
+
+    
+        return {
+            'prediction': int(prediction[0]),
+            'probability': probability[0][int(prediction[0])]
+        }
+    
+    except Exception as e:
+        return {
+            'status': 'success',
+            'error': str(e)
+        }
+    
+
