@@ -1,11 +1,13 @@
 services:
-  - name: banking-fraud-service
+  - name: fastapi-app
     env:
+      - key: PYTHONUNBUFFERED
+        value: 'true'
       - key: MODEL_NAME
-        value: BankingFraudModel
-    buildCommand: ./scripts/build_model1.sh
-    startCommand: python3 fastapi dev app.py
+        value: BankingFraudModel 
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app:app --host 0.0.0.0 --port $PORT
 
 environments:
   - name: production
-    domain: your-domain.onrender.com
+    domain: tvismodel.onrender.com
