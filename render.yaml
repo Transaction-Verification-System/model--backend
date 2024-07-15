@@ -3,12 +3,9 @@ services:
     env:
       - key: MODEL_NAME
         value: BankingFraudModel
-
     buildCommand: ./scripts/build_model1.sh
     startCommand: python3 fastapi dev app.py
-
 
 environments:
   - name: production
     domain: your-domain.onrender.com
-
