@@ -1,12 +1,16 @@
 import json
-import numpy as np
 
-def extract_json(json_input):
+from validators.BankingFraudInput import BankingFraudInput
+
+def extract_json(json_input: BankingFraudInput):
     try:
-        data = json.loads(json_input.model_dump_json())
-        attributes = [data[attr] for attr in data]
-        return [np.array(attributes)]
+        data = json.loads(json_input.json())
+        print(f'Data: {data}')
 
+        attributes = [data[attr] for attr in data]
+        print(f'Attributes: {attributes}')
+
+        return attributes
     except Exception as e:
-        print("Error:", e)
+        print(f"Error: {e}")
         return None

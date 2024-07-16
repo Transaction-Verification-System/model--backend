@@ -39,13 +39,19 @@ def predict_fraud(credit_card_input: CreditFraudInput):
 
 @app.post('/banking-fraud/predict')
 async def predict_banking_fraud(banking_fraud_input: BankingFraudInput):
-    try: 
+    try:
         values = extract_json(banking_fraud_input)
-        data_array = preprocess_banking_data(values)
-        print(f'processed data: {data_array}')
-        prediction = await banking_model.predict(data_array)
+        if values is None:
+            return {
+                'status': 'error',
+                'error': 'Invalid input data format'
+            }
 
-        print(f'prediction: {prediction}')
+        data_array = preprocess_banking_data(values)
+        print(f'Processed data: {data_array}')
+        prediction = banking_model.predict([data_array])
+
+        print(f'Prediction: {prediction}')
 
         return {
             'status': 'success',
@@ -54,10 +60,9 @@ async def predict_banking_fraud(banking_fraud_input: BankingFraudInput):
         }
     except Exception as e:
         return {
-            'status': 'success',
+            'status': 'error',
             'error': str(e)
         }
-    
 
 
 @app.post('/ecommerce_fraud/predict')
