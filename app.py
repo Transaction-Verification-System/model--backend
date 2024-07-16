@@ -1,10 +1,12 @@
 from validators.CreditFraudInput import CreditFraudInput
 from validators.BankingFraudInput import BankingFraudInput
+from validators.BankingFraudGBMInput import BankingFraudGBMInput
 from validators.EcommerceFraud import TransactionData
 from utils.extractJson import extract_json
 from utils.preprocessBankData import preprocess_banking_data
 from fastapi import FastAPI
 import joblib
+import numpy as np
 from pandas import json_normalize
 
 
@@ -13,7 +15,7 @@ app = FastAPI()
 credit_model = joblib.load('models/CreditFraudModel.joblib')
 banking_model = joblib.load('models/BankingFraudModel.joblib')
 ecommerce_model= joblib.load('models/logistic_regression_model.pkl')
-
+banking_fraud_model = joblib.load('models/bankingfraudmodel.pkl')
 
 @app.get("/")
 def root():
@@ -39,19 +41,13 @@ def predict_fraud(credit_card_input: CreditFraudInput):
 
 @app.post('/banking-fraud/predict')
 async def predict_banking_fraud(banking_fraud_input: BankingFraudInput):
-    try:
+    try: 
         values = extract_json(banking_fraud_input)
-        if values is None:
-            return {
-                'status': 'error',
-                'error': 'Invalid input data format'
-            }
-
         data_array = preprocess_banking_data(values)
-        print(f'Processed data: {data_array}')
-        prediction = banking_model.predict([data_array])
+        print(f'processed data: {data_array}')
+        prediction = await banking_model.predict(data_array)
 
-        print(f'Prediction: {prediction}')
+        print(f'prediction: {prediction}')
 
         return {
             'status': 'success',
@@ -60,9 +56,10 @@ async def predict_banking_fraud(banking_fraud_input: BankingFraudInput):
         }
     except Exception as e:
         return {
-            'status': 'error',
+            'status': 'success',
             'error': str(e)
         }
+    
 
 
 @app.post('/ecommerce_fraud/predict')
@@ -85,3 +82,23 @@ def predict(transaction: TransactionData):
         }
     
 
+# @app.post('/banking-fraud-gbm/predict')
+# async def predict_banking_fraud(banking_fraud_input: BankingFraudGBMInput):
+#     try:
+#         values = extract_json(banking_fraud_input)
+#         data_array = preprocess_banking_data(values)
+#         print(f'processed data: {data_array}')
+#         prediction = await banking_fraud_model.predict(data_array)
+
+#         print(f'prediction: {prediction}')
+
+#         return {
+#             'status': 'success',
+#             'model': 'banking-fraud-detectiongbm',
+#             'isFraud': bool(prediction[0])
+#         }
+#     except Exception as e:
+#         return {
+#             'status': 'success',
+#             'error': str(e)
+#         }
