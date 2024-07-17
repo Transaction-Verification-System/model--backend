@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 
-class BankingFraudGBMInput(BaseModel):
+
+class FraudDetectionInput(BaseModel):
     income: float
     name_email_similarity: float
     prev_address_months_count: int
@@ -25,11 +26,10 @@ class BankingFraudGBMInput(BaseModel):
     has_other_cards: int
     proposed_credit_limit: float
     foreign_request: int
+    source: str
     session_length_in_minutes: float
     device_os: str
     keep_alive_session: int
     device_distinct_emails_8w: int
+    device_fraud_count: int
     month: int
-    MISSING_FLAG_prev_address_months_count: int
-    MISSING_FLAG_intended_balcon_amount: int
-    MISSING_FLAG_bank_months_count: int
