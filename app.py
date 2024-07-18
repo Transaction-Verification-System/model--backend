@@ -4,7 +4,6 @@ from validators.EcommerceFraud import TransactionData
 from validators.BankingFraudGBMInput import FraudDetectionInput
 from utils.extractJson import extract_json
 from utils.preprocessBankData import preprocess_banking_data
-# from utils.preprocessGBMdata import lgbm_preprocessor
 from fastapi import FastAPI
 import joblib
 import pandas as pd
@@ -17,7 +16,7 @@ app = FastAPI()
 credit_model = joblib.load('models/CreditFraudModel.joblib')
 banking_model = joblib.load('models/BankingFraudModel.joblib')
 ecommerce_model= joblib.load('models/logistic_regression_model.pkl')
-banking_fraud_model = joblib.load('models/bankingfraudmodel.pkl')
+banking_fraud_model = joblib.load('models/lightgbm_model.pkl')
 lgbm_preprocessor = joblib.load('models/lgbm_preprocessor.pkl')
 
 @app.get("/")
@@ -99,7 +98,7 @@ def predict_new_data(request:FraudDetectionInput):
         y_pred_new_proba = banking_fraud_model.predict(user_data_processed, num_iteration=banking_fraud_model.best_iteration)
         
         # Convert probabilities to binary outcomes (0 or 1) based on a threshold (e.g., 0.5)
-        threshold = 0.8
+        threshold = 0.5
         y_pred_new = (y_pred_new_proba >= threshold).astype(int)
         
         return {
