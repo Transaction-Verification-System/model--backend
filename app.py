@@ -26,8 +26,13 @@ def root():
 @app.post('/credit-fraud/predict')
 def predict_fraud(credit_card_input: CreditFraudInput):
     try:
+
+
+        print(f'/credit-fraud/predict: {credit_card_input}')
         values = extract_json(credit_card_input)
-        prediction = credit_model.predict(values)
+        print(f'values: {values}')
+        prediction = credit_model.predict([values])
+        print(f'prediction: {prediction}')
 
         return {
             'status': 'success',
