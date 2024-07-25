@@ -7,7 +7,6 @@ from utils.preprocessBankData import preprocess_banking_data
 from fastapi import FastAPI
 import joblib
 import pandas as pd
-from pandas import json_normalize
 import json
 
 
@@ -26,13 +25,8 @@ def root():
 @app.post('/credit-fraud/predict')
 def predict_fraud(credit_card_input: CreditFraudInput):
     try:
-
-
-        print(f'/credit-fraud/predict: {credit_card_input}')
         values = extract_json(credit_card_input)
-        print(f'values: {values}')
         prediction = credit_model.predict([values])
-        print(f'prediction: {prediction}')
 
         return {
             'status': 'success',
@@ -46,35 +40,36 @@ def predict_fraud(credit_card_input: CreditFraudInput):
             'error': str(e)
         }
 
-@app.post('/banking-fraud/predict')
-async def predict_banking_fraud(banking_fraud_input: BankingFraudInput):
-    try: 
-        values = extract_json(banking_fraud_input)
-        data_array = preprocess_banking_data(values)
-        print(f'processed data: {data_array}')
-        prediction = await banking_model.predict(data_array)
+# @app.post('/banking-fraud/predict')
+# async def predict_banking_fraud(banking_fraud_input: BankingFraudInput):
+#     try: 
+#         values = extract_json(banking_fraud_input)
+#         data_array = preprocess_banking_data(values)
+#         print(f'processed data: {data_array}')
+#         prediction = await banking_model.predict(data_array)
 
-        print(f'prediction: {prediction}')
+#         print(f'prediction: {prediction}')
 
-        return {
-            'status': 'success',
-            'model': 'banking-fraud-detection',
-            'isFraud': bool(prediction[0])
-        }
-    except Exception as e:
-        return {
-            'status': 'success',
-            'error': str(e)
-        }
+#         return {
+#             'status': 'success',
+#             'model': 'banking-fraud-detection',
+#             'isFraud': bool(prediction[0])
+#         }
+#     except Exception as e:
+#         return {
+#             'status': 'success',
+#             'error': str(e)
+#         }
     
 
 
 @app.post('/ecommerce_fraud/predict')
 def predict(transaction: TransactionData):
     try:
+
         values = extract_json(transaction)
-        prediction = ecommerce_model.predict(values)
-        probability = ecommerce_model.predict_proba(values)
+        prediction = ecommerce_model.predict([values])
+        probability = ecommerce_model.predict_proba([values])
         return {
             'prediction': int(prediction[0]),
             'probability': probability[0][int(prediction[0])]
@@ -92,7 +87,6 @@ def predict(transaction: TransactionData):
 def predict_new_data(request:FraudDetectionInput):
    
     try:
-        
         user_data = request.json()    
         data_dict = json.loads(user_data)    
         user_data_df = pd.DataFrame([data_dict])
