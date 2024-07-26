@@ -1,6 +1,5 @@
 from pydantic import BaseModel
 
-
 class TransactionData(BaseModel):
     No_Transactions: int
     No_Orders: int
