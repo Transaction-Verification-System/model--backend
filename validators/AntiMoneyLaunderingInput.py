@@ -1,15 +1,17 @@
 from pydantic import BaseModel
+from typing import Literal
 
 class AntiMoneyLaunderingInput(BaseModel):
-        Sender_account :int
-        Receiver_account:int
-        Amount:float
-        Year:int
-        Month:int 
-        Laundering_type_Single_large: bool
-        Laundering_type_Smurfing:bool
-        Laundering_type_Stacked_Bipartite :bool
-        Laundering_type_Structuring:bool
-        Is_laundering:int
-        Length: 106
-        dtype: object
+    Time: str
+    Date: str
+    Sender_account: int
+    Receiver_account: int
+    Amount: float
+    Payment_currency: str
+    Received_currency: str
+    Sender_bank_location: str
+    Receiver_bank_location: str
+    Payment_type: str
+    Laundering_type: Literal[
+        'Single_large', 'Smurfing', 'Stacked_Bipartite', 'Structuring'
+    ]
