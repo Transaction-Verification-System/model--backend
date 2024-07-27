@@ -18,9 +18,8 @@ banking_model = joblib.load('models/BankingFraudModel.joblib')
 ecommerce_model= joblib.load('models/logistic_regression_model.pkl')
 banking_fraud_model = joblib.load('models/lightgbm_model.pkl')
 lgbm_preprocessor = joblib.load('models/lgbm_preprocessor.pkl')
-aml_model = joblib.load('models/AML.joblib')
-aml_label_encoder = joblib.load('models/AML_encoder.pkl')
-aml_scaler = joblib.load('models/AML_scaler.pkl')
+aml_transformer = joblib.load('models/tmodel.pkl')
+aml_model = joblib.load('models/aml_model.pkl')
 
 @app.get("/")
 def root():
@@ -32,18 +31,12 @@ def root():
 def predict_aml(input: AntiMoneyLaunderingInput):
     try:
         # Preprocess the input data
-        preprocessed_data = process_model_input(input, aml_label_encoder, aml_scaler)
+        preprocessed_data = process_model_input(input, aml_transformer)
 
-
-        print(f'-------\npreprocessed data: {preprocessed_data}---\n')
-        
         # Ensure the preprocessed data is a 2D array
         if preprocessed_data.ndim == 1:
             preprocessed_data = preprocessed_data.reshape(1, -1)
 
-
-        print(f'preprocessed data: {preprocessed_data}')
-        
         # Make predictions
         prediction = aml_model.predict(preprocessed_data)
 
@@ -52,7 +45,7 @@ def predict_aml(input: AntiMoneyLaunderingInput):
             'model': 'anti-money-laundering',
             'isLaundering': int(prediction[0])
         }
-    
+
     except Exception as e:
         return {
             'status': 'error',
