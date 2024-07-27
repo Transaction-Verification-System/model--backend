@@ -26,7 +26,6 @@ def root():
     return {"message": "Hello from TIVS --model backend"}
 
 
-
 @app.post('/aml/predict')
 def predict_aml(input: AntiMoneyLaunderingInput):
     try:
@@ -37,8 +36,14 @@ def predict_aml(input: AntiMoneyLaunderingInput):
         if preprocessed_data.ndim == 1:
             preprocessed_data = preprocessed_data.reshape(1, -1)
 
-        # Make predictions
-        prediction = aml_model.predict(preprocessed_data)
+        # Predict probabilities
+        probability = aml_model.predict_proba(preprocessed_data)[:, 1]
+
+        # Adjust threshold as needed
+        threshold = 0.9811000  # Default threshold
+
+        print(f'probability: {probability}')
+        prediction = (probability > threshold).astype(int)
 
         return {
             'status': 'success',
