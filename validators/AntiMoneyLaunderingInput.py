@@ -12,6 +12,4 @@ class AntiMoneyLaunderingInput(BaseModel):
     Sender_bank_location: str
     Receiver_bank_location: str
     Payment_type: str
-    Laundering_type: Literal[
-        'Single_large', 'Smurfing', 'Stacked_Bipartite', 'Structuring'
-    ]
+    Laundering_type: str

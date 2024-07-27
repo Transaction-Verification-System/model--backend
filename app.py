@@ -33,6 +33,9 @@ def predict_aml(input: AntiMoneyLaunderingInput):
     try:
         # Preprocess the input data
         preprocessed_data = process_model_input(input, aml_label_encoder, aml_scaler)
+
+
+        print(f'-------\npreprocessed data: {preprocessed_data}---\n')
         
         # Ensure the preprocessed data is a 2D array
         if preprocessed_data.ndim == 1:
